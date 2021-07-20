@@ -4,8 +4,7 @@ Welcome to my TV.GAB addon for KODI. This add-on allows you to view streams and 
 
 I hope you get some use out of it. Feel free to feedback any suggestions and/or code improvements.
 
-Please note: this is an early version. It has no support for user login. It just reads the "guide" page and allows you to watch the videos there.
-Instructions:
+Note: this is a very early version. It has no support for user login. It just reads the "guide" page and allows you to watch the videos there. It should not be imported into any repositories yet.
 
 ## Disclaimer
 
