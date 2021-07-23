@@ -22,9 +22,13 @@ menu = kodi_menu.KODIMenu(plugin)
 def index():
 
     global menu
-    eps = get_guide()
+    #eps = get_guide(page=0)
     menu.start_folder()
-    for e in eps:
+    menu.new_folder_item("Recommended", func=open_recommended, iconURL=None, description=None, item_val=1, label2="")
+    menu.end_folder()
+
+
+"""     for e in eps:
 
         #menu.new_folder_item(item_name=e.title, func=play, iconURL=e.thumb, description=e.title, item_val=None, label2=""):
         print("page_url", e.page_url)
@@ -33,6 +37,29 @@ def index():
 
         menu.new_folder_item(item_name=e.title, func=open_item, iconURL=e.thumb, description=e.title, item_val=i, label2="")
         #menu.new_video_item(displayName=e.channel, title=e.title, description=e.title, playURL="", thumbURL=e.thumb, duration=e.duration)
+
+    menu.end_folder()
+ """
+@plugin.route('/recommended/<item_val>')
+def open_recommended(item_val):
+    global menu
+    page=int(item_val)
+    eps = get_guide(page=page)
+    menu.start_folder()
+    if page>1:        
+        menu.new_folder_item("<<<< Previous page", func=open_recommended, iconURL=None, description=None, item_val=page-1, label2="")
+
+    for e in eps:
+
+        #menu.new_folder_item(item_name=e.title, func=play, iconURL=e.thumb, description=e.title, item_val=None, label2=""):
+        print("page_url", e.page_url)
+        i=base64.urlsafe_b64encode(bytes(e.page_url, 'utf-8')).decode('utf-8')
+        print("i ", i)
+
+        menu.new_folder_item(item_name=e.title, func=open_item, iconURL=e.thumb, description=str(e.duration)+"\n"+e.channel+"\n"+e.title, item_val=i, label2="")
+        #menu.new_video_item(displayName=e.channel, title=e.title, description=e.title, playURL="", thumbURL=e.thumb, duration=e.duration)
+
+    menu.new_folder_item(">>>> Next page", func=open_recommended, iconURL=None, description=None, item_val=page+1, label2="")
 
     menu.end_folder()
 
@@ -50,9 +77,5 @@ def open_item(item_val):
     menu.start_folder()
 
     menu.new_video_item(displayName=e.channel, title=e.title, description=e.title, playURL=e.page_url, thumbURL=e.thumb, duration=e.duration)
-
-    # item_val is the url of the episode page
-    print ("URLURLURLURL ", url)
-
 
     menu.end_folder()

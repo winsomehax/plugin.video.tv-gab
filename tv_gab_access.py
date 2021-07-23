@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from cache import data_cache
 import re
 
-class Gab_episode:
+class Gab_guide_episode:
 
     def __init__(self, url: str, title: str, thumb: str, channel:str, duration: int):
         self.page_url=url
@@ -99,10 +99,11 @@ def _get_live(url):
     e=Gab_episode_page(url=u,title=title,thumb=thumb,channel=channel,duration=duration)
     return (pickle.dumps(e))
 
-def _get_guide():
+def _get_guide(page):
 
     guide = []
-    url="https://tv.gab.com/guide"
+    url="https://tv.gab.com/guide/recommended/more?p="+str(page)
+    #url="https://tv.gab.com/guide"
 
     req = requests.get(url, cookies=None, headers={"User-Agent": "tv-gab Kodi-Addon/1"})
 
@@ -118,17 +119,21 @@ def _get_guide():
         thumburl="https://tv.gab.com"+img.attrs["src"]
         channel=e.find("div", class_="uk-text-truncate uk-text-bold").get_text()
         #playURL=get_live(url)
-        g=Gab_episode(url=url,title=e.attrs["title"], thumb=thumburl, channel=channel, duration=0)
+        g=Gab_guide_episode(url=url,title=e.attrs["title"], thumb=thumburl, channel=channel, duration=0)
         guide.append(g)
     
     return (pickle.dumps(guide))
 
 # Wrappers to ensure the subs, notifications, playlists are cached for 15 minutes
 
-def get_guide():
+def get_guide(page):
 
     global data_cache
-    return pickle.loads(data_cache.cacheFunction(_get_guide))
+
+    if page is None:
+        page=0
+
+    return pickle.loads(data_cache.cacheFunction(_get_guide, page))
 
 def get_live(url):
 
